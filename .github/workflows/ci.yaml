@@ -40,12 +40,6 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '11'
-      
-      - name: Build java app
-        run: make java_verify
-      
-      - name: Show environment variables
-        run: env | sort
 
       - name: Define the Docker tag
         id: vars
@@ -54,6 +48,13 @@ jobs:
       - name: Print the tag
         id: print
         run: echo ${{ steps.vars.outputs.tag }}
+      
+      - name: Set variables
+        run: |
+          export DOCKER_ORG="lsst-sqre"
+          export DOCKER_REGISTRY="ghcr.io"
+          export DOCKER_TAG="${{ steps.vars.outputs.tag }}"
+          export PROJECT_NAME="strimzi-access-operator"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -64,13 +65,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/lsst-sqre/strimzi-access-operator:${{ steps.vars.outputs.tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      
+      - name: Build
+        run: make all
