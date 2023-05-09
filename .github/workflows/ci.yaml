@@ -37,6 +37,13 @@ jobs:
         with:
           fetch-depth: 0
       
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+      
+      - name: Build java app
+        run: make java_verify
+      
       - name: Show environment variables
         run: env | sort
 
