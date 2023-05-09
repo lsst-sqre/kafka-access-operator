@@ -49,16 +49,6 @@ jobs:
       - name: Print the tag
         id: print
         run: echo ${{ steps.vars.outputs.tag }}
-      
-      - name: Set variables
-        run: |
-          export DOCKER_ORG="lsst-sqre"
-          export DOCKER_REGISTRY="ghcr.io"
-          export DOCKER_TAG="${{ steps.vars.outputs.tag }}"
-          export PROJECT_NAME="strimzi-access-operator"
-      
-      - name: Print environment variables
-        run: env | sort
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -72,3 +62,8 @@ jobs:
       
       - name: Build
         run: make all
+        env:
+          DOCKER_ORG: "lsst-sqre"
+          DOCKER_REGISTRY: "ghcr.io"
+          DOCKER_TAG: ${{ steps.vars.outputs.tag }}
+          PROJECT_NAME: "strimzi-access-operator"
