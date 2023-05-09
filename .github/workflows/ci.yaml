@@ -56,6 +56,9 @@ jobs:
           export DOCKER_REGISTRY="ghcr.io"
           export DOCKER_TAG="${{ steps.vars.outputs.tag }}"
           export PROJECT_NAME="strimzi-access-operator"
+      
+      - name: Print environment variables
+        run: env | sort
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
