@@ -28,14 +28,19 @@ jobs:
     # repositories whose branch names match our tickets/* branch convention,
     # but in this case the build will fail with an error since the secret
     # won't be set.
-    if: >
-      startsWith(github.ref, 'refs/tags/')
-      || startsWith(github.head_ref, 'tickets/')
+    # if: >
+    #   startsWith(github.ref, 'refs/tags/')
+    #   || startsWith(github.head_ref, 'tickets/')
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
       - name: Define the Docker tag
         id: vars
@@ -54,13 +59,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/lsst-sqre/strimzi-access-operator:${{ steps.vars.outputs.tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      
+      - name: Build
+        run: make all
+        env:
+          DOCKER_ORG: "lsst-sqre"
+          DOCKER_REGISTRY: "ghcr.io"
+          DOCKER_TAG: ${{ steps.vars.outputs.tag }}
+          PROJECT_NAME: "strimzi-access-operator"
