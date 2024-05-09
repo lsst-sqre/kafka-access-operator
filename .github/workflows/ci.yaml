@@ -33,14 +33,22 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build
+        run: |
+          make all
+        env:
+          DOCKER_ORG: lsst-sqre
+          PROJECT_NAME: kafka-access-operator
+          DOCKER_REGISTRY: ghcr.io
 
-      - name: Build and push
-        id: build
-        uses: docker/build-push-action@v5
-        with:
-          context: "."
-          file: "Dockerfile"
-          tags: |
-            ghcr.io/lsst-sqre/kafka-access-operator:${{ steps.tag.outputs.tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push
+      #   id: build
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: "."
+      #     file: "Dockerfile"
+      #     tags: |
+      #       ghcr.io/lsst-sqre/kafka-access-operator:${{ steps.tag.outputs.tag }}
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
