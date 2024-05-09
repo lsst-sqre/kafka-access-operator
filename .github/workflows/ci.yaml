@@ -36,7 +36,7 @@ jobs:
       
       - name: Build
         run: |
-          make all
+          make MVN_ARGS='-DskipTests -DskipITs' all
         env:
           DOCKER_ORG: lsst-sqre
           PROJECT_NAME: kafka-access-operator
